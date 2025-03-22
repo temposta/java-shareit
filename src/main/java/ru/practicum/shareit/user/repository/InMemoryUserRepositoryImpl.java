@@ -32,14 +32,18 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public void delete(long userId) {
         User user = users.remove(userId);
-        if (user == null) throw new NotFoundException(String
-                .format("Пользователь с id %s не существует", userId));
+        if (user == null) {
+            throw new NotFoundException(String
+                    .format("Пользователь с id %s не существует", userId));
+        }
     }
 
     @Override
     public User update(long userId, UserPatchDto userPatchDto) {
         User user = users.get(userId);
-        if (userPatchDto.getName() != null) user.setName(userPatchDto.getName());
+        if (userPatchDto.getName() != null) {
+            user.setName(userPatchDto.getName());
+        }
         if (userPatchDto.getEmail() != null) {
             checkEmail(userPatchDto.getEmail());
             user.setEmail(userPatchDto.getEmail());
@@ -49,8 +53,10 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     private void checkEmail(String email) {
         users.forEach((key, value) -> {
-            if (value.getEmail().equals(email)) throw new ValidationException(String
-                    .format("Указанный Email %s уже используется", email));
+            if (value.getEmail() != null && value.getEmail().equals(email)) {
+                throw new ValidationException(String
+                        .format("Указанный Email %s уже используется", email));
+            }
         });
     }
 

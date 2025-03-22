@@ -49,7 +49,9 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> findAllWithTextFilter(String text) {
-        if (text.isBlank()) return List.of();
+        if (text.isBlank()) {
+            return List.of();
+        }
         return items.values()
                 .stream()
                 .filter(item -> item.getAvailable() &&

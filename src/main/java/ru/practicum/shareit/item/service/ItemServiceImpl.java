@@ -53,11 +53,19 @@ public class ItemServiceImpl implements ItemService {
         Item patchItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String
                         .format("Вещь с указанным id: %s не найдена", itemId)));
-        if (ownerId != patchItem.getOwner()) throw new ForbiddenException(String
-                .format("Пользователь с id: %s не является владельцем вещи", ownerId));
-        if (itemPatchDto.getAvailable() != null) patchItem.setAvailable(itemPatchDto.getAvailable());
-        if (itemPatchDto.getName() != null) patchItem.setName(itemPatchDto.getName());
-        if (itemPatchDto.getDescription() != null) patchItem.setDescription(itemPatchDto.getDescription());
+        if (ownerId != patchItem.getOwner()) {
+            throw new ForbiddenException(String
+                    .format("Пользователь с id: %s не является владельцем вещи", ownerId));
+        }
+        if (itemPatchDto.getAvailable() != null) {
+            patchItem.setAvailable(itemPatchDto.getAvailable());
+        }
+        if (itemPatchDto.getName() != null) {
+            patchItem.setName(itemPatchDto.getName());
+        }
+        if (itemPatchDto.getDescription() != null) {
+            patchItem.setDescription(itemPatchDto.getDescription());
+        }
         return itemRepository.save(patchItem);
     }
 
@@ -110,8 +118,10 @@ public class ItemServiceImpl implements ItemService {
         Item deletedItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String
                         .format("Вещь с указанным id: %s не найдена", itemId)));
-        if (ownerId != deletedItem.getOwner()) throw new ForbiddenException(String
-                .format("Пользователь с id: %s не является владельцем вещи", ownerId));
+        if (ownerId != deletedItem.getOwner()) {
+            throw new ForbiddenException(String
+                    .format("Пользователь с id: %s не является владельцем вещи", ownerId));
+        }
         itemRepository.deleteById(itemId);
     }
 
