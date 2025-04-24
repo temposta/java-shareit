@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,6 @@ import java.util.Collection;
 /**
  * Контроллер для работы с бронированием.
  */
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/bookings")
@@ -58,8 +56,6 @@ public class BookingController {
                                     @RequestBody @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                     BookingCreateDto bookingCreateDto) {
         System.out.println("bookingCreateDto = " + bookingCreateDto);
-        log.info("Получен запрос на создание бронирования от пользователя c ID {}, с данными: {}",
-                bookerId, bookingCreateDto);
         User booker = userService.get(bookerId);
         Item item = itemService.getItem(bookingCreateDto.getItemId());
         if (bookingCreateDto.getStart().isAfter(bookingCreateDto.getEnd())) {
@@ -67,7 +63,6 @@ public class BookingController {
         }
         Booking booking = bookingMapper.fromDto(bookingCreateDto, item, booker, StatusEnum.WAITING);
         booking = bookingService.create(booking);
-        log.info("Создано бронирование {}", booking);
 
         return bookingMapper.toDto(booking);
     }
@@ -85,8 +80,6 @@ public class BookingController {
     public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                      @PathVariable("bookingId") long bookingId,
                                      @RequestParam("approved") Boolean approved) {
-        log.info("Получен запрос на подтверждение/отклонение запроса с ID - {} от пользователя с ID - {}",
-                bookingId, bookerId);
         User booker = userService.get(bookerId);
         Booking booking = bookingService.get(bookingId);
         if (bookerId != booking.getItem().getOwner().getId()) {
@@ -101,7 +94,6 @@ public class BookingController {
             booking.setStatus(StatusEnum.REJECTED);
         }
         bookingService.save(booking);
-        log.info("Статус бронирования {} обновлен", booking);
         return bookingMapper.toDto(booking);
     }
 
@@ -115,8 +107,6 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public BookingDto getBooking(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                  @PathVariable("bookingId") long bookingId) {
-        log.info("Получен запрос на получение информации о бронировании с ID - {} от пользователя с ID - {}",
-                bookingId, bookerId);
         User booker = userService.get(bookerId);
         Booking booking = bookingService.get(bookingId);
         if (bookerId != booking.getItem().getOwner().getId() && bookerId != booking.getBooker().getId()) {
@@ -139,12 +129,8 @@ public class BookingController {
     public Collection<BookingDto> getBookingsCurrentUserWithState(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                                                   @RequestParam(value = "state", defaultValue = "ALL")
                                                                   RequestStates state) {
-        log.info("Получен запрос на информацию о бронированиях пользователя с ID - {} c параметром запроса - {}",
-                bookerId, state);
-
-        User booker = userService.get(bookerId);
+        userService.get(bookerId);
         Collection<Booking> bookings = bookingService.getBookingsCurrentUserWithState(bookerId, state);
-        log.info("Получена информация о бронированиях пользователя {} c параметром запроса {}: {}", booker, state, bookings);
         return bookingMapper.toDto(bookings);
     }
 
@@ -160,12 +146,8 @@ public class BookingController {
     public Collection<BookingDto> getBookingsByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                                      @RequestParam(value = "state", defaultValue = "ALL")
                                                      RequestStates state) {
-        log.info("Получен запрос владельцем с ID - {} на список его бронирований с параметром state = {}",
-                ownerId, state);
-        User booker = userService.get(ownerId);
+        userService.get(ownerId);
         Collection<Booking> bookings = bookingService.getBookingsByOwner(ownerId, state);
-        log.info("Получена информация о бронированиях для владельца - {} - c параметром запроса - {}: {}",
-                booker, state, bookings);
         return bookingMapper.toDto(bookings);
     }
 
