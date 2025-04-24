@@ -13,23 +13,23 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findAllByBookerIdOrderByStartDateDesc(Long id);
 
-    Collection<Booking> findAllByBookerIdAndStartDateBeforeAndEndDateAfterOrderByStartDateDesc(Long booker_id, LocalDateTime now, LocalDateTime now1);
+    Collection<Booking> findAllByBookerIdAndStartDateBeforeAndEndDateAfterOrderByStartDateDesc(Long bookerId, LocalDateTime now, LocalDateTime now1);
 
-    Collection<Booking> findAllByBookerIdAndEndDateBeforeOrderByStartDateDesc(Long booker_id, LocalDateTime now);
+    Collection<Booking> findAllByBookerIdAndEndDateBeforeOrderByStartDateDesc(Long bookerId, LocalDateTime now);
 
-    Collection<Booking> findAllByBookerIdAndStartDateAfterOrderByStartDateDesc(Long booker_id, LocalDateTime now);
+    Collection<Booking> findAllByBookerIdAndStartDateAfterOrderByStartDateDesc(Long bookerId, LocalDateTime now);
 
-    Collection<Booking> findAllByBookerIdAndStatusOrderByStartDateDesc(Long booker_id, StatusEnum status);
+    Collection<Booking> findAllByBookerIdAndStatusOrderByStartDateDesc(Long bookerId, StatusEnum status);
 
-    Collection<Booking> findAllByItemOwnerIdOrderByStartDateDesc(Long owner_id);
+    Collection<Booking> findAllByItemOwnerIdOrderByStartDateDesc(Long ownerId);
 
-    Collection<Booking> findAllByItemOwnerIdAndStartDateBeforeAndEndDateAfterOrderByStartDateDesc(Long owner_id, LocalDateTime now, LocalDateTime now1);
+    Collection<Booking> findAllByItemOwnerIdAndStartDateBeforeAndEndDateAfterOrderByStartDateDesc(Long ownerId, LocalDateTime now, LocalDateTime now1);
 
-    Collection<Booking> findAllByItemOwnerIdAndEndDateBeforeOrderByStartDateDesc(Long owner_id, LocalDateTime now);
+    Collection<Booking> findAllByItemOwnerIdAndEndDateBeforeOrderByStartDateDesc(Long ownerId, LocalDateTime now);
 
-    Collection<Booking> findAllByItemOwnerIdAndStartDateAfterOrderByStartDateDesc(Long owner_id, LocalDateTime now);
+    Collection<Booking> findAllByItemOwnerIdAndStartDateAfterOrderByStartDateDesc(Long ownerId, LocalDateTime now);
 
-    Collection<Booking> findAllByItemOwnerIdAndStatusOrderByStartDateDesc(Long owner_id, StatusEnum status);
+    Collection<Booking> findAllByItemOwnerIdAndStatusOrderByStartDateDesc(Long ownerId, StatusEnum status);
 
-    Optional<Booking> findByItemIdAndBookerIdAndStartDateBeforeAndStatus(Long item_id, Long booker_id, LocalDateTime endDate, StatusEnum status);
+    Optional<Booking> findByItemIdAndBookerIdAndStartDateBeforeAndStatus(Long itemId, Long bookerId, LocalDateTime endDate, StatusEnum status);
 }
