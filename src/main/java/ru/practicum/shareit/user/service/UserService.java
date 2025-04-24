@@ -5,11 +5,11 @@ import ru.practicum.shareit.user.model.User;
 
 public interface UserService {
 
-    User create(User user);
+    User save(User user);
 
     User get(long userId);
 
     void delete(long userId);
 
-    User update(long userId, UserPatchDto userPatchDto);
+    User update(User currentUser, UserPatchDto userPatchDto);
 }

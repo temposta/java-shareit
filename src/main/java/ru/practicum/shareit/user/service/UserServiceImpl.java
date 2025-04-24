@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exeptions.NotFoundException;
+import ru.practicum.shareit.exeptions.ForbiddenException;
 import ru.practicum.shareit.user.dto.UserPatchDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -16,23 +16,29 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User create(User user) {
-        return userRepository.create(user);
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override
     public User get(long userId) {
-        return userRepository.getById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ForbiddenException("Пользователь с id " + userId + " не найден."));
     }
 
     @Override
     public void delete(long userId) {
-        userRepository.delete(userId);
+        userRepository.deleteById(userId);
     }
 
     @Override
-    public User update(long userId, UserPatchDto userPatchDto) {
-        return userRepository.update(userId, userPatchDto);
+    public User update(User currentUser, UserPatchDto userPatchDto) {
+        if (userPatchDto.getName() != null) {
+            currentUser.setName(userPatchDto.getName());
+        }
+        if (userPatchDto.getEmail() != null) {
+            currentUser.setEmail(userPatchDto.getEmail());
+        }
+        return userRepository.save(currentUser);
     }
 }
