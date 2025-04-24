@@ -1,9 +1,9 @@
-DROP VIEW public.items_owner_dto;
-DROP TABLE IF EXISTS public.comments;
-DROP TABLE IF EXISTS public.bookings;
-DROP TABLE IF EXISTS public.requests;
-DROP TABLE IF EXISTS public.items;
-DROP TABLE IF EXISTS public.users;
+-- DROP VIEW public.items_owner_dto;
+-- DROP TABLE IF EXISTS public.comments;
+-- DROP TABLE IF EXISTS public.bookings;
+-- DROP TABLE IF EXISTS public.requests;
+-- DROP TABLE IF EXISTS public.items;
+-- DROP TABLE IF EXISTS public.users;
 
 -- Table: public.users
 
