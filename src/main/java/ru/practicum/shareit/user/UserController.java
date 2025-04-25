@@ -30,6 +30,7 @@ public class UserController {
 
     /**
      * Метод для создания нового пользователя
+     *
      * @param user Данные для создания пользователя
      * @return созданный пользователь
      */
@@ -37,13 +38,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody @Valid User user) {
         log.info("Creating user: {}", user);
-        user = userService.create(user);
+        user = userService.save(user);
         log.info("Created user: {}", user);
         return user;
     }
 
     /**
      * Метод для получения пользователя по ID
+     *
      * @param userId ID пользователя для получения
      * @return пользователь с указанным ID
      */
@@ -57,6 +59,7 @@ public class UserController {
 
     /**
      * Метод для удаления пользователя с указанным ID
+     *
      * @param userId ID пользователя для удаления
      */
     @DeleteMapping("/{userId}")
@@ -68,14 +71,16 @@ public class UserController {
 
     /**
      * Метод для внесения изменений в данные пользователя
-     * @param userId ID пользователя для обновления данных
+     *
+     * @param userId       ID пользователя для обновления данных
      * @param userPatchDto данные, подлежащие изменению
      * @return пользователь с новыми данными после обновления
      */
     @PatchMapping("{userId}")
     public User updateUser(@PathVariable long userId, @RequestBody @Valid UserPatchDto userPatchDto) {
         log.info("Updating user: {}", userId);
-        User updated = userService.update(userId, userPatchDto);
+        User currentUser = userService.get(userId);
+        User updated = userService.update(currentUser, userPatchDto);
         log.info("Updated user: {}", updated);
         return updated;
     }

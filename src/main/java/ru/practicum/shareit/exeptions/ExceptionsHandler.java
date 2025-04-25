@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exeptions;
 
 import jakarta.validation.ValidationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,20 @@ public class ExceptionsHandler {
     public ResponseEntity<ErrorMessage> handleValidationException(ValidationException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationException(ConstraintViolationException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceUnavailableException.class)
+    public ResponseEntity<ErrorMessage> handleResourceUnavailableException(ResourceUnavailableException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorMessage(e.getMessage()));
     }
 

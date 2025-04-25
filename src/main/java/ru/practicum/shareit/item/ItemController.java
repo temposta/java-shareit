@@ -15,9 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemPatchDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemOwnerView;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -35,6 +42,8 @@ public class ItemController {
      * Зависимость контроллера от ItemService
      */
     private final ItemService itemService;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
     /**
      * Метод для создания новой вещи
@@ -45,10 +54,11 @@ public class ItemController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Item createItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                           @RequestBody @Valid ItemCreateDto itemCreateDto) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                              @RequestBody @Valid ItemCreateDto itemCreateDto) {
         log.info("Creating new item {} by owner with id {}", itemCreateDto, ownerId);
-        return itemService.addNewItem(ownerId, itemCreateDto);
+        Item item = itemService.addNewItem(ownerId, itemCreateDto);
+        return itemMapper.toDto(item);
     }
 
     /**
@@ -60,11 +70,12 @@ public class ItemController {
      * @param itemPatchDto данные, которые подлежат редактированию.
      */
     @PatchMapping("/{itemId}")
-    public Item patchItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                          @PathVariable long itemId,
-                          @RequestBody @Valid ItemPatchDto itemPatchDto) {
+    public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
+                             @PathVariable long itemId,
+                             @RequestBody @Valid ItemPatchDto itemPatchDto) {
         log.info("Patching item id {} by owner with id {} on data {}", itemId, ownerId, itemPatchDto);
-        return itemService.patchItem(ownerId, itemId, itemPatchDto);
+        Item item = itemService.patchItem(ownerId, itemId, itemPatchDto);
+        return itemMapper.toDto(item);
     }
 
     /**
@@ -76,10 +87,12 @@ public class ItemController {
      * @return информация по запрошенной вещи.
      */
     @GetMapping("/{itemId}")
-    public Item getItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                        @PathVariable long itemId) {
+    public ItemOwnerView getItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                                 @PathVariable long itemId) {
         log.info("Getting item with id {} by user with id {}", itemId, userId);
-        return itemService.getItem(itemId);
+        ItemOwnerView item = itemService.getItemForOwnerView(itemId);
+        log.info(String.valueOf(item));
+        return item;
     }
 
     /**
@@ -89,9 +102,11 @@ public class ItemController {
      * @return список всех вещей владельца с указанным ID.
      */
     @GetMapping
-    public List<Item> getItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+    public List<ItemOwnerView> getItems(@RequestHeader("X-Sharer-User-Id") long ownerId) {
         log.info("Getting items by owner with id {}", ownerId);
-        return itemService.getItems(ownerId);
+        List<ItemOwnerView> items = itemService.getItemsForOwner(ownerId);
+        log.info("Got {} items", items.size());
+        return items;
     }
 
     /**
@@ -104,10 +119,11 @@ public class ItemController {
      * @return список найденных вещей согласно условиям запроса.
      */
     @GetMapping("/search")
-    public List<Item> getItemsWithText(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @RequestParam("text") String text) {
+    public List<ItemDto> getItemsWithText(@RequestHeader("X-Sharer-User-Id") long userId,
+                                          @RequestParam("text") String text) {
         log.info("Getting items by text {} from user with id {}", text, userId);
-        return itemService.getItemsWithText(text);
+        List<Item> items = itemService.getItemsWithText(text);
+        return itemMapper.toDto(items);
     }
 
     /**
@@ -121,5 +137,15 @@ public class ItemController {
                            @PathVariable long itemId) {
         log.info("Deleting item with id {} from user with id {}", itemId, ownerId);
         itemService.deleteItem(ownerId, itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long bookerId,
+                                 @PathVariable long itemId,
+                                 @RequestBody @Valid CommentCreateDto commentCreateDto) {
+        log.info("Posting comment with id {} to item with id {}", bookerId, itemId);
+        Comment comment = itemService.addComment(bookerId, itemId, commentCreateDto);
+        log.info("Comment {} added to item with id {}", comment, itemId);
+        return commentMapper.toDto(comment);
     }
 }
