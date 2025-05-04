@@ -15,4 +15,5 @@ public class ItemCreateDto {
     private String description;
     @NotNull(message = "Доступность вещи должна быть определена")
     private Boolean available;
+    private Long requestId;
 }

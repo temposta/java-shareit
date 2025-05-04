@@ -24,6 +24,7 @@ public class ItemMapper {
                 .name(itemCreateDto.getName())
                 .description(itemCreateDto.getDescription())
                 .isAvailable(itemCreateDto.getAvailable())
+                .requestId(itemCreateDto.getRequestId())
                 .build();
     }
 
