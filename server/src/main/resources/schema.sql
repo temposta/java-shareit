@@ -1,9 +1,9 @@
- DROP VIEW items_owner_dto;
- DROP TABLE IF EXISTS comments;
- DROP TABLE IF EXISTS bookings;
-DROP TABLE IF EXISTS requests;
- DROP TABLE IF EXISTS items;
- DROP TABLE IF EXISTS users;
+-- DROP VIEW items_owner_dto;
+-- DROP TABLE IF EXISTS comments;
+-- DROP TABLE IF EXISTS bookings;
+-- DROP TABLE IF EXISTS requests;
+-- DROP TABLE IF EXISTS items;
+-- DROP TABLE IF EXISTS users;
 
 -- Table: users
 
