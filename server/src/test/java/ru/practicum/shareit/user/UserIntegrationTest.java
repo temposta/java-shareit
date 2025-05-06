@@ -31,7 +31,7 @@ public class UserIntegrationTest {
     void testUser() {
         User user = new User();
         user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
+        user.setEmail("john1.doe@example.com");
 
         userController.createUser(user);
 
