@@ -28,7 +28,7 @@ public class UserIntegrationTest {
     private UserController userController;
 
     @Test
-    void testUser(){
+    void testUser() {
         User user = new User();
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
