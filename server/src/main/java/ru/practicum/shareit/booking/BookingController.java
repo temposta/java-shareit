@@ -55,7 +55,6 @@ public class BookingController {
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                     @RequestBody @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                     BookingCreateDto bookingCreateDto) {
-        System.out.println("bookingCreateDto = " + bookingCreateDto);
         User booker = userService.get(bookerId);
         Item item = itemService.getItem(bookingCreateDto.getItemId());
         if (bookingCreateDto.getStart().isAfter(bookingCreateDto.getEnd())) {
